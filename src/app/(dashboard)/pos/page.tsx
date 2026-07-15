@@ -291,38 +291,61 @@ export default function POSPage() {
 
         {/* Products Grid */}
         <div className="flex-1 overflow-y-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {products
-              .filter((p) => p.stock > 0)
-              .map((product) => (
-                <button
-                  key={product.id}
-                  onClick={() => addToCart(product)}
-                  className="bg-white rounded-xl p-4 border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all text-left group"
-                >
-                  {product.category && (
-                    <span
-                      className="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full mb-2"
-                      style={{
-                        backgroundColor: `${product.category.color}15`,
-                        color: product.category.color,
-                      }}
-                    >
-                      {product.category.name}
-                    </span>
-                  )}
-                  <p className="font-semibold text-slate-900 text-sm leading-tight group-hover:text-indigo-600 transition-colors">
-                    {product.name}
-                  </p>
-                  <p className="text-xs text-slate-400 font-mono mt-1">
-                    Stock: {product.stock}
-                  </p>
-                  <p className="text-lg font-bold text-indigo-600 mt-2">
-                    {formatCurrency(product.price)}
-                  </p>
-                </button>
-              ))}
-          </div>
+          {products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center py-20">
+              <Package className="w-16 h-16 text-slate-300 mb-4" />
+              <h3 className="text-lg font-semibold text-slate-700 mb-2">
+                No hay productos registrados
+              </h3>
+              <p className="text-sm text-slate-400 max-w-md mb-6">
+                Agrega productos desde la sección de productos para empezar a vender.
+                Necesitas al menos un producto con stock disponible.
+              </p>
+              <a
+                href="/products"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-medium"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Ir a Productos
+              </a>
+              <p className="text-xs text-slate-300 mt-4">
+                Recuerda: primero crea categorías, luego productos con stock
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {products
+                .filter((p) => p.stock > 0)
+                .map((product) => (
+                  <button
+                    key={product.id}
+                    onClick={() => addToCart(product)}
+                    className="bg-white rounded-xl p-4 border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all text-left group"
+                  >
+                    {product.category && (
+                      <span
+                        className="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full mb-2"
+                        style={{
+                          backgroundColor: `${product.category.color}15`,
+                          color: product.category.color,
+                        }}
+                      >
+                        {product.category.name}
+                      </span>
+                    )}
+                    <p className="font-semibold text-slate-900 text-sm leading-tight group-hover:text-indigo-600 transition-colors">
+                      {product.name}
+                    </p>
+                    <p className="text-xs text-slate-400 font-mono mt-1">
+                      Stock: {product.stock}
+                    </p>
+                    <p className="text-lg font-bold text-indigo-600 mt-2">
+                      {formatCurrency(product.price)}
+                    </p>
+                  </button>
+                ))}
+            </div>
+          )}
         </div>
       </div>
 
