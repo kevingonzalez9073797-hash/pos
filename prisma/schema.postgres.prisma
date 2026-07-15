@@ -1,0 +1,92 @@
+// POS System Database Schema - PostgreSQL version for Render
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("CASHIER")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sales     Sale[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  color       String    @default("#6366f1")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  cost        Float      @default(0)
+  sku         String     @unique
+  barcode     String?
+  stock       Int        @default(0)
+  minStock    Int        @default(5)
+  imageUrl    String?
+  active      Boolean    @default(true)
+  categoryId  String?
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  saleItems   SaleItem[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  nit       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sales     Sale[]
+}
+
+model Sale {
+  id            String     @id @default(cuid())
+  subtotal      Float
+  tax           Float      @default(0)
+  discount      Float      @default(0)
+  total         Float
+  paymentMethod String     @default("CASH")
+  status        String     @default("COMPLETED")
+  notes         String?
+  customerId    String?
+  customer      Customer?  @relation(fields: [customerId], references: [id])
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  items         SaleItem[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model SaleItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  price     Float
+  subtotal  Float
+  saleId    String
+  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}

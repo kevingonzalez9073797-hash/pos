@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: freepos
+    runtime: node
+    repo: https://github.com/kevingonzalez9073797-hash/pos.git
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        fromDatabase:
+          name: freepos-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+    buildCommand: npm install && npx prisma generate --schema=prisma/schema.postgres.prisma && npm run build
+    startCommand: npx prisma db push --schema=prisma/schema.postgres.prisma && npm start
+    healthCheckPath: /login
+
+databases:
+  - name: freepos-db
+    plan: free
+    postgresMajorVersion: 16
