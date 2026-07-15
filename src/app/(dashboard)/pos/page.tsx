@@ -16,6 +16,8 @@ import {
   Barcode,
   Percent,
   Check,
+  Package,
+  PlusCircle,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import toast from "react-hot-toast";

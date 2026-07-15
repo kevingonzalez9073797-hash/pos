@@ -3,16 +3,12 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import {
-  TrendingUp,
-  ShoppingCart,
   Package,
   Users,
   AlertTriangle,
   DollarSign,
   Calendar,
   Store,
-  PlusCircle,
-  List,
   Tag,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
