@@ -13,6 +13,10 @@ services:
           property: connectionString
       - key: AUTH_SECRET
         generateValue: true
+      - key: AUTH_URL
+        sync: false
+      - key: NEXTAUTH_URL
+        sync: false
     buildCommand: npm install && npx prisma generate --schema=prisma/schema.postgres.prisma && npm run build
     startCommand: npx prisma db push --schema=prisma/schema.postgres.prisma && npm start
     healthCheckPath: /login
