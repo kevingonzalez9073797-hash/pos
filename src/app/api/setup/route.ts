@@ -8,18 +8,19 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    // Check if already has an admin user
-    const existingUsers = await prisma.user.count();
-    if (existingUsers > 0) {
-      return NextResponse.json({
-        message: "⚠️ La base de datos ya tiene usuarios. No se duplicaron.",
-        users: existingUsers,
-      });
-    }
+    console.log("🧹 Limpiando base de datos...");
+
+    // 1. Eliminar TODOS los datos existentes (orden inverso por foreign keys)
+    await prisma.saleItem.deleteMany();
+    await prisma.sale.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.category.deleteMany();
+    await prisma.customer.deleteMany();
+    await prisma.user.deleteMany();
 
     console.log("🌱 Inicializando base de datos via API...");
 
-    // Create ONLY the admin user - everything else stays blank
+    // 2. Crear SOLO el usuario administrador
     const adminPassword = await bcrypt.hash("admin123", 10);
 
     await prisma.user.create({
@@ -33,10 +34,10 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: "✅ Sistema inicializado correctamente. Solo se creó el usuario administrador.",
-      info: "El sistema está en blanco. Agrega productos, categorías y clientes desde la interfaz.",
+      message: "✅ Sistema reiniciado completamente. Solo se creó el usuario administrador.",
+      info: "Todos los datos anteriores fueron eliminados. El sistema está en blanco.",
       data: {
-        users: await prisma.user.count(),
+        users: 1,
         categories: 0,
         products: 0,
         customers: 0,
@@ -47,9 +48,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error initializing database:", error);
+    console.error("Error resetting database:", error);
     return NextResponse.json(
-      { error: "Error al inicializar: " + (error as Error).message },
+      { error: "Error al reiniciar: " + (error as Error).message },
       { status: 500 }
     );
   } finally {
