@@ -44,8 +44,9 @@ export async function GET() {
     const totalCustomers = await prisma.customer.count();
 
     // Low stock products - use raw query to compare columns correctly
+    // Note: COUNT(*) returns bigint in PostgreSQL, we cast to integer
     const lowStockResult = await prisma.$queryRawUnsafe<{ count: number }[]>(
-      `SELECT COUNT(*) as count FROM Product WHERE active = 1 AND stock <= minStock`
+      `SELECT COUNT(*)::int as count FROM "Product" WHERE active = true AND stock <= "minStock"`
     );
     const lowStockProducts = Number(lowStockResult[0]?.count || 0);
 
